@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Positions</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
+</head>
+<body>
+
+  <!-- Player buttons -->
+  <div>
+    <button onclick="openPopup('99 Vincent')">99 Vincent</button>
+    <button onclick="openPopup('5 Benjamin')">5 Benjamin</button>
+    <button onclick="openPopup('13 Andrew')">13 Andrew</button>
+    <button onclick="openPopup('20 Lucas R.')">20 Lucas R.</button>
+    <button onclick="openPopup('29 Ryan')">29 Ryan</button>
+    <button onclick="openPopup('24 Lucas H.')">24 Lucas H.</button>
+    <button onclick="openPopup('19 Luke')">19 Luke</button>
+    <button onclick="openPopup('3 Matthew')">3 Matthew</button>
+    <button onclick="openPopup('11 Jacob')">11 Jacob</button>
+    <button onclick="openPopup('21 Tyler')">21 Tyler</button>
+    <button onclick="openPopup('30 David')">30 David</button>
+  </div>
+
+  <!-- Position assignment popup -->
+  <div id="positionPopup" style="display: none;">
+    <p>Select a position for <span id="selectedPlayer"></span>:</p>
+    <select id="positionDropdown">
+      <option value="Position 1">Position 1</option>
+      <option value="Position 2">Position 2</option>
+      <option value="Position 3">Position 3</option>
+      <option value="Position 4">Position 4</option>
+      <option value="Position 5">Position 5</option>
+      <option value="Position 6">Position 6</option>
+      <option value="Position 7">Position 7</option>
+      <option value="Position 8">Position 8</option>
+      <option value="Position 9">Position 9</option>
+      <option value="Bench 1">Bench 1</option>
+      <option value="Bench 2">Bench 2</option>
+    </select>
+    <button onclick="assignPosition()">Assign</button>
+  </div>
+
+  <!-- Assigned positions list -->
+  <div id="assignedPositions">
+    <h3>Assigned Positions:</h3>
+    <ul id="positionsList"></ul>
+  </div>
+
+  <!-- Reset button -->
+  <button onclick="resetForm()">Reset</button>
+
+  <script>
+    // Add your JavaScript code here
+    function openPopup(playerName) {
+      document.getElementById('selectedPlayer').textContent = playerName;
+      document.getElementById('positionPopup').style.display = 'block';
+    }
+
+    function assignPosition() {
+      var playerName = document.getElementById('selectedPlayer').textContent;
+      var selectedPosition = document.getElementById('positionDropdown').value;
+
+      // Logic to assign the selected position to the player
+      var positionsList = document.getElementById('positionsList');
+      var listItem = document.createElement('li');
+      listItem.textContent = playerName + ': ' + selectedPosition;
+      positionsList.appendChild(listItem);
+
+      // Reset the popup
+      document.getElementById('positionPopup').style.display = 'none';
+      document.getElementById('selectedPlayer').textContent = '';
+
+      // Optionally: Disable the assigned position in the dropdown
+      document.getElementById('positionDropdown').removeChild(document.querySelector('option[value="' + selectedPosition + '"]'));
+    }
+
+    function resetForm() {
+      // Logic to reset the form
+      document.getElementById('positionsList').innerHTML = '';
+      // Optionally: Reset the dropdown options
+      document.getElementById('positionDropdown').innerHTML = '<option value="Position 1">Position 1</option><option value="Position 2">Position 2</option><option value="Position 3">Position 3</option><option value="Position 4">Position 4</option><option value="Position 5">Position 5</option><option value="Position 6">Position 6</option><option value="Position 7">Position 7</option><option value="Position 8">Position 8</option><option value="Position 9">Position 9</option><option value="Bench 1">Bench 1</option><option value="Bench 2">Bench 2</option>';
+    }
+  </script>
+
+</body>
+</html>
