@@ -5,57 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baseball Lineup</title>
   <style>
-    /* Add your custom styles here */
     .player-button {
-      width: 100px; /* Adjust the width as needed */
-      height: 40px; /* Adjust the height as needed */
+      width: 120px;
+      height: 50px;
       margin: 5px;
       text-align: center;
       cursor: pointer;
     }
 
     .lineup-card {
-      /* Add your lineup card styles here */
-      margin-top: 20px; /* Add space between player buttons and positions */
-      border: none; /* Remove the border around the lineup card */
+      margin-top: 20px;
+      border: none;
     }
 
     .baseball-diamond {
-      /* Add your baseball diamond styles here */
-      margin-top: 20px; /* Add space between lineup card and baseball diamond */
-      width: 300px; /* Adjust the width as needed */
-      height: auto; /* Maintain aspect ratio */
+      margin-top: 20px;
+      width: 300px;
+      height: auto;
       display: block;
     }
-
-    /* Add any additional styles as needed */
-
   </style>
   <script>
-    // Add your JavaScript functions here
+    var positions = [
+      "Pitcher", "Catcher", "1st Base", "2nd Base", "3rd Base",
+      "Shortstop", "Left Field", "Center Field", "Right Field",
+      "Bench 1", "Bench 2"
+    ];
+
+    var assignedPositions = {};
+
     function showLineupPopup(player) {
       // Logic for displaying the popup
-      alert(`Assign ${player} to a position.`);
+      var availablePositions = positions.filter(pos => !assignedPositions[pos]);
+      var popupMessage = `Assign ${player} to a position:\n${availablePositions.join(', ')}`;
+      var selectedPosition = prompt(popupMessage);
+
+      if (selectedPosition && availablePositions.includes(selectedPosition)) {
+        assignedPositions[selectedPosition] = player;
+        updateLineupCard();
+      }
+    }
+
+    function updateLineupCard() {
+      var lineupCard = document.getElementById("lineup-card");
+      lineupCard.innerHTML = "<p><strong>Lineup Card:</strong></p>";
+
+      positions.forEach(pos => {
+        var playerName = assignedPositions[pos] || "Unassigned";
+        lineupCard.innerHTML += `<p>${pos}: ${playerName}</p>`;
+      });
     }
 
     function showBaseballDiamond() {
       // Logic for displaying the baseball diamond with assigned positions
       alert('Show baseball diamond with assigned positions.');
     }
-
   </script>
 </head>
 <body>
 
-  <!-- Player Buttons -->
   <div>
-    <button class="player-button" onclick="showLineupPopup('Matthew')">Matthew</button>
-    <!-- Add buttons for other players -->
+    <!-- Player Buttons -->
+    <div>
+      <button class="player-button" onclick="showLineupPopup('Matthew')">Matthew</button>
+      <button class="player-button" onclick="showLineupPopup('Benjamin')">Benjamin</button>
+      <button class="player-button" onclick="showLineupPopup('Jacob')">Jacob</button>
+      <!-- Add buttons for other players -->
+    </div>
 
     <!-- Lineup Card -->
-    <div class="lineup-card">
-      <p><strong>Lineup Card:</strong></p>
-      <!-- Add player names based on assigned positions -->
+    <div id="lineup-card" class="lineup-card">
+      <!-- Lineup card will be dynamically updated -->
     </div>
   </div>
 
@@ -64,9 +84,8 @@
     <img class="baseball-diamond" src="https://static.vecteezy.com/system/resources/previews/001/198/300/large_2x/baseball-diamond-png.png" alt="Baseball Diamond">
   </div>
 
-  <script>
-    // Add your JavaScript functions for updating lineup card and baseball diamond
-  </script>
+  <!-- Button to show final display -->
+  <button onclick="showBaseballDiamond()">Show Final Display</button>
 
 </body>
 </html>
