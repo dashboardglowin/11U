@@ -17,13 +17,6 @@
       margin-top: 20px;
       border: none;
     }
-
-    .baseball-diamond {
-      margin-top: 20px;
-      width: 300px;
-      height: auto;
-      display: block;
-    }
   </style>
   <script>
     var positions = [
@@ -55,11 +48,6 @@
         lineupCard.innerHTML += `<p>${pos}: ${playerName}</p>`;
       });
     }
-
-    function showBaseballDiamond() {
-      // Logic for displaying the baseball diamond with assigned positions
-      alert('Show baseball diamond with assigned positions.');
-    }
   </script>
 </head>
 <body>
@@ -79,13 +67,9 @@
     </div>
   </div>
 
-  <!-- Baseball Diamond -->
-  <div>
-    <img class="baseball-diamond" src="https://static.vecteezy.com/system/resources/previews/001/198/300/large_2x/baseball-diamond-png.png" alt="Baseball Diamond">
-  </div>
+</body>
+</html>
 
-  <!-- Button to show final display -->
-  <button onclick="showBaseballDiamond()">Show Final Display</button>
 
 </body>
 </html>
