@@ -1,4 +1,4 @@
-<!-- VERSION 2 -->
+<!-- VERSION 3 -->
 <!DOCTYPE html>
 <html>
 
@@ -9,8 +9,8 @@
 
     /* New style for player buttons */
     .player-button {
-      width: 120px; /* Adjust the width as needed */
-      height: 80px; /* Adjust the height as needed */
+      width: 80px; /* Adjust the width as needed */
+      height: 40px; /* Adjust the height as needed */
       margin: 5px;  /* Adjust the margin as needed */
     }
 
@@ -19,14 +19,12 @@
       background-color: lightblue; /* Adjust the color as needed */
     }
 
-    /* New style for clear buttons */
-    .clear-button {
-      background-color: #f44336; /* Red color for clear buttons, adjust as needed */
-      color: white;
-      border: none;
-      padding: 5px;
-      margin: 2px;
-      cursor: pointer;
+    /* New style for position list */
+    #positionList {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 20px; /* Adjust the margin as needed */
+      font-size: 16px; /* Adjust the font size as needed */
     }
   </style>
 </head>
@@ -39,6 +37,9 @@
 
     // Array to track filled positions
     var filledPositions = [];
+
+    // Array to track used player buttons
+    var usedPlayerButtons = [];
 
     // Function to create buttons and position list
     function createLineup() {
@@ -57,7 +58,7 @@
       button.innerHTML = playerName;
       button.classList.add("player-button");
       button.onclick = function () {
-        showPositionPopup(playerName);
+        showPositionPopup(playerName, button);
       };
       document.body.appendChild(button);
     }
@@ -72,22 +73,17 @@
       for (var i = 0; i < positions.length; i++) {
         var listItem = document.createElement("li");
         listItem.innerHTML = positions[i] + ": ";
-
-        // Add clear button next to each position
-        var clearButton = document.createElement("button");
-        clearButton.innerHTML = "Clear";
-        clearButton.classList.add("clear-button");
-        clearButton.onclick = function () {
-          clearPosition(positions[i]);
-        };
-        listItem.appendChild(clearButton);
-
         list.appendChild(listItem);
       }
     }
 
     // Function to show the position assignment popup
-    function showPositionPopup(playerName) {
+    function showPositionPopup(playerName, playerButton) {
+      // Check if the player button has been used
+      if (usedPlayerButtons.includes(playerButton)) {
+        return;
+      }
+
       var popup = document.createElement("div");
       popup.innerHTML = "Select position for " + playerName + ": ";
 
@@ -95,7 +91,7 @@
         var positionButton = document.createElement("button");
         positionButton.innerHTML = positions[i];
         positionButton.onclick = function () {
-          assignPosition(playerName, this.innerHTML);
+          assignPosition(playerName, this.innerHTML, playerButton);
           document.body.removeChild(popup);
         };
 
@@ -109,10 +105,13 @@
       }
 
       document.body.appendChild(popup);
+
+      // Mark the player button as used
+      usedPlayerButtons.push(playerButton);
     }
 
     // Function to assign a position to a player
-    function assignPosition(playerName, position) {
+    function assignPosition(playerName, position, playerButton) {
       var positionList = document.getElementById("positionList");
       var positionItems = positionList.getElementsByTagName("li");
 
@@ -124,30 +123,20 @@
           filledPositions.push(positions[i]);
         }
       }
-    }
 
-    // Function to clear a position
-    function clearPosition(position) {
-      // Clear the position from the array
-      filledPositions = filledPositions.filter(function (filledPosition) {
-        return filledPosition !== position;
-      });
-
-      // Clear the position in the UI
-      var positionList = document.getElementById("positionList");
-      var positionItems = positionList.getElementsByTagName("li");
-
-      for (var i = 0; i < positionItems.length; i++) {
-        if (positionItems[i].innerHTML.includes(position)) {
-          positionItems[i].innerHTML = positions[i] + ": ";
-        }
-      }
+      // Change style of the player button
+      playerButton.classList.add("filled-position");
+      playerButton.disabled = true;
     }
 
     // Function to reset the lineup
     function resetLineup() {
       var positionList = document.getElementById("positionList");
       positionList.innerHTML = "";
+
+      // Clear arrays
+      filledPositions = [];
+      usedPlayerButtons = [];
 
       createPositionList();
     }
