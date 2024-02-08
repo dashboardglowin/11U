@@ -1,90 +1,160 @@
+<!-- VERSION 2 -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Player Positions</title>
+  <title>Baseball Lineup</title>
   <style>
-    /* Add your CSS styles here */
+    /* Add your CSS styles here if needed */
+
+    /* New style for player buttons */
+    .player-button {
+      width: 120px; /* Adjust the width as needed */
+      height: 80px; /* Adjust the height as needed */
+      margin: 5px;  /* Adjust the margin as needed */
+    }
+
+    /* New style for filled positions */
+    .filled-position {
+      background-color: lightblue; /* Adjust the color as needed */
+    }
+
+    /* New style for clear buttons */
+    .clear-button {
+      background-color: #f44336; /* Red color for clear buttons, adjust as needed */
+      color: white;
+      border: none;
+      padding: 5px;
+      margin: 2px;
+      cursor: pointer;
+    }
   </style>
 </head>
+
 <body>
-
-  <!-- Player buttons -->
-  <div>
-    <button onclick="openPopup('99 Vincent')">99 Vincent</button>
-    <button onclick="openPopup('5 Benjamin')">5 Benjamin</button>
-    <button onclick="openPopup('13 Andrew')">13 Andrew</button>
-    <button onclick="openPopup('20 Lucas R.')">20 Lucas R.</button>
-    <button onclick="openPopup('29 Ryan')">29 Ryan</button>
-    <button onclick="openPopup('24 Lucas H.')">24 Lucas H.</button>
-    <button onclick="openPopup('19 Luke')">19 Luke</button>
-    <button onclick="openPopup('3 Matthew')">3 Matthew</button>
-    <button onclick="openPopup('11 Jacob')">11 Jacob</button>
-    <button onclick="openPopup('21 Tyler')">21 Tyler</button>
-    <button onclick="openPopup('30 David')">30 David</button>
-  </div>
-
-  <!-- Position assignment popup -->
-  <div id="positionPopup" style="display: none;">
-    <p>Select a position for <span id="selectedPlayer"></span>:</p>
-    <select id="positionDropdown">
-      <option value="Position 1">Position 1</option>
-      <option value="Position 2">Position 2</option>
-      <option value="Position 3">Position 3</option>
-      <option value="Position 4">Position 4</option>
-      <option value="Position 5">Position 5</option>
-      <option value="Position 6">Position 6</option>
-      <option value="Position 7">Position 7</option>
-      <option value="Position 8">Position 8</option>
-      <option value="Position 9">Position 9</option>
-      <option value="Bench 1">Bench 1</option>
-      <option value="Bench 2">Bench 2</option>
-    </select>
-    <button onclick="assignPosition()">Assign</button>
-  </div>
-
-  <!-- Assigned positions list -->
-  <div id="assignedPositions">
-    <h3>Assigned Positions:</h3>
-    <ul id="positionsList"></ul>
-  </div>
-
-  <!-- Reset button -->
-  <button onclick="resetForm()">Reset</button>
-
   <script>
-    // Add your JavaScript code here
-    function openPopup(playerName) {
-      document.getElementById('selectedPlayer').textContent = playerName;
-      document.getElementById('positionPopup').style.display = 'block';
+    // Define player names and positions
+    var playerNames = ["Matthew", "Benjamin", "Jacob", "Andrew", "Luke", "Lucas R", "Tyler", "Lucas H", "Ryan", "David", "Vincent"];
+    var positions = ["Pitcher", "Catcher", "1st Base", "2nd Base", "3rd Base", "Shortstop", "Left Field", "Center Field", "Right Field", "Bench 1", "Bench 2"];
+
+    // Array to track filled positions
+    var filledPositions = [];
+
+    // Function to create buttons and position list
+    function createLineup() {
+      // Create buttons for each player
+      for (var i = 0; i < playerNames.length; i++) {
+        createPlayerButton(playerNames[i]);
+      }
+
+      // Create position list
+      createPositionList();
     }
 
-    function assignPosition() {
-      var playerName = document.getElementById('selectedPlayer').textContent;
-      var selectedPosition = document.getElementById('positionDropdown').value;
-
-      // Logic to assign the selected position to the player
-      var positionsList = document.getElementById('positionsList');
-      var listItem = document.createElement('li');
-      listItem.textContent = playerName + ': ' + selectedPosition;
-      positionsList.appendChild(listItem);
-
-      // Reset the popup
-      document.getElementById('positionPopup').style.display = 'none';
-      document.getElementById('selectedPlayer').textContent = '';
-
-      // Optionally: Disable the assigned position in the dropdown
-      document.getElementById('positionDropdown').removeChild(document.querySelector('option[value="' + selectedPosition + '"]'));
+    // Function to create a player button
+    function createPlayerButton(playerName) {
+      var button = document.createElement("button");
+      button.innerHTML = playerName;
+      button.classList.add("player-button");
+      button.onclick = function () {
+        showPositionPopup(playerName);
+      };
+      document.body.appendChild(button);
     }
 
-    function resetForm() {
-      // Logic to reset the form
-      document.getElementById('positionsList').innerHTML = '';
-      // Optionally: Reset the dropdown options
-      document.getElementById('positionDropdown').innerHTML = '<option value="Position 1">Position 1</option><option value="Position 2">Position 2</option><option value="Position 3">Position 3</option><option value="Position 4">Position 4</option><option value="Position 5">Position 5</option><option value="Position 6">Position 6</option><option value="Position 7">Position 7</option><option value="Position 8">Position 8</option><option value="Position 9">Position 9</option><option value="Bench 1">Bench 1</option><option value="Bench 2">Bench 2</option>';
+    // Function to create the position list
+    function createPositionList() {
+      var list = document.createElement("ul");
+      list.id = "positionList";
+      document.body.appendChild(list);
+
+      // Populate the initial position list
+      for (var i = 0; i < positions.length; i++) {
+        var listItem = document.createElement("li");
+        listItem.innerHTML = positions[i] + ": ";
+
+        // Add clear button next to each position
+        var clearButton = document.createElement("button");
+        clearButton.innerHTML = "Clear";
+        clearButton.classList.add("clear-button");
+        clearButton.onclick = function () {
+          clearPosition(positions[i]);
+        };
+        listItem.appendChild(clearButton);
+
+        list.appendChild(listItem);
+      }
     }
+
+    // Function to show the position assignment popup
+    function showPositionPopup(playerName) {
+      var popup = document.createElement("div");
+      popup.innerHTML = "Select position for " + playerName + ": ";
+
+      for (var i = 0; i < positions.length; i++) {
+        var positionButton = document.createElement("button");
+        positionButton.innerHTML = positions[i];
+        positionButton.onclick = function () {
+          assignPosition(playerName, this.innerHTML);
+          document.body.removeChild(popup);
+        };
+
+        // Check if position is filled and disable button
+        if (filledPositions.includes(positions[i])) {
+          positionButton.classList.add("filled-position");
+          positionButton.disabled = true;
+        }
+
+        popup.appendChild(positionButton);
+      }
+
+      document.body.appendChild(popup);
+    }
+
+    // Function to assign a position to a player
+    function assignPosition(playerName, position) {
+      var positionList = document.getElementById("positionList");
+      var positionItems = positionList.getElementsByTagName("li");
+
+      for (var i = 0; i < positionItems.length; i++) {
+        if (positionItems[i].innerHTML.includes(position)) {
+          positionItems[i].innerHTML = positions[i] + ": " + playerName + " ";
+
+          // Add filled position to the array
+          filledPositions.push(positions[i]);
+        }
+      }
+    }
+
+    // Function to clear a position
+    function clearPosition(position) {
+      // Clear the position from the array
+      filledPositions = filledPositions.filter(function (filledPosition) {
+        return filledPosition !== position;
+      });
+
+      // Clear the position in the UI
+      var positionList = document.getElementById("positionList");
+      var positionItems = positionList.getElementsByTagName("li");
+
+      for (var i = 0; i < positionItems.length; i++) {
+        if (positionItems[i].innerHTML.includes(position)) {
+          positionItems[i].innerHTML = positions[i] + ": ";
+        }
+      }
+    }
+
+    // Function to reset the lineup
+    function resetLineup() {
+      var positionList = document.getElementById("positionList");
+      positionList.innerHTML = "";
+
+      createPositionList();
+    }
+
+    // Create the lineup when the page loads
+    window.onload = createLineup;
   </script>
-
 </body>
+
 </html>
