@@ -1,3 +1,4 @@
+<!-- VERSION 2 -->
 <!DOCTYPE html>
 <html>
 
@@ -5,6 +6,28 @@
   <title>Baseball Lineup</title>
   <style>
     /* Add your CSS styles here if needed */
+
+    /* New style for player buttons */
+    .player-button {
+      width: 120px; /* Adjust the width as needed */
+      height: 80px; /* Adjust the height as needed */
+      margin: 5px;  /* Adjust the margin as needed */
+    }
+
+    /* New style for filled positions */
+    .filled-position {
+      background-color: lightblue; /* Adjust the color as needed */
+    }
+
+    /* New style for clear buttons */
+    .clear-button {
+      background-color: #f44336; /* Red color for clear buttons, adjust as needed */
+      color: white;
+      border: none;
+      padding: 5px;
+      margin: 2px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -13,6 +36,9 @@
     // Define player names and positions
     var playerNames = ["Matthew", "Benjamin", "Jacob", "Andrew", "Luke", "Lucas R", "Tyler", "Lucas H", "Ryan", "David", "Vincent"];
     var positions = ["Pitcher", "Catcher", "1st Base", "2nd Base", "3rd Base", "Shortstop", "Left Field", "Center Field", "Right Field", "Bench 1", "Bench 2"];
+
+    // Array to track filled positions
+    var filledPositions = [];
 
     // Function to create buttons and position list
     function createLineup() {
@@ -29,6 +55,7 @@
     function createPlayerButton(playerName) {
       var button = document.createElement("button");
       button.innerHTML = playerName;
+      button.classList.add("player-button");
       button.onclick = function () {
         showPositionPopup(playerName);
       };
@@ -45,6 +72,16 @@
       for (var i = 0; i < positions.length; i++) {
         var listItem = document.createElement("li");
         listItem.innerHTML = positions[i] + ": ";
+
+        // Add clear button next to each position
+        var clearButton = document.createElement("button");
+        clearButton.innerHTML = "Clear";
+        clearButton.classList.add("clear-button");
+        clearButton.onclick = function () {
+          clearPosition(positions[i]);
+        };
+        listItem.appendChild(clearButton);
+
         list.appendChild(listItem);
       }
     }
@@ -61,6 +98,13 @@
           assignPosition(playerName, this.innerHTML);
           document.body.removeChild(popup);
         };
+
+        // Check if position is filled and disable button
+        if (filledPositions.includes(positions[i])) {
+          positionButton.classList.add("filled-position");
+          positionButton.disabled = true;
+        }
+
         popup.appendChild(positionButton);
       }
 
@@ -74,7 +118,28 @@
 
       for (var i = 0; i < positionItems.length; i++) {
         if (positionItems[i].innerHTML.includes(position)) {
-          positionItems[i].innerHTML += playerName + " ";
+          positionItems[i].innerHTML = positions[i] + ": " + playerName + " ";
+
+          // Add filled position to the array
+          filledPositions.push(positions[i]);
+        }
+      }
+    }
+
+    // Function to clear a position
+    function clearPosition(position) {
+      // Clear the position from the array
+      filledPositions = filledPositions.filter(function (filledPosition) {
+        return filledPosition !== position;
+      });
+
+      // Clear the position in the UI
+      var positionList = document.getElementById("positionList");
+      var positionItems = positionList.getElementsByTagName("li");
+
+      for (var i = 0; i < positionItems.length; i++) {
+        if (positionItems[i].innerHTML.includes(position)) {
+          positionItems[i].innerHTML = positions[i] + ": ";
         }
       }
     }
